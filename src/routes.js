@@ -1,28 +1,26 @@
 const multer = require('multer');
 const routes = require('express').Router();
 const multerConfig = require('./config/multer');
-const fs = require("fs");
-const path = require("path");
-const piexif = require("piexifjs");
+const exif = require("./component/exif");
+const deletaFoto = require('./component/deletaFoto');
+
 
 routes.post('/posts', multer(multerConfig).single('file'), (req, res) => {
-
-    return res.json({ saudacao: 'Conseguimos enviar o arquivo!'})
+    
+    exif(req.file.originalname)
+    return res.json({ saudacao: 'Conseguimos enviar o arquivo, capturar o nome e adiciona-lo no exif do arquivo!'})
 });
 
 routes.get('/', (req, res) => {
-       return res.json({ saudacao: 'Olá Pessoal!'})
+
+       return res.json("asddsds: asas")
 });
 
 routes.delete('/posts/:id', (req, res) => {
-    fs.unlink(
-        path.resolve(__dirname, "..", "temp", "uploads", req.params.id), (err => {
-            if (err) console.log(err);
-            else {
-                return res.json({ acao: 'Arquivo excluido'})
-            }
-        })
-    )
+
+    deletaFoto(req.params.id)
+    
+    return res.json({ acao: 'Arquivo excluido'})
 });
 
 
