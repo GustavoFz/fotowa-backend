@@ -3,6 +3,7 @@ const routes = require('express').Router();
 const multerConfig = require('./config/multer');
 const exif = require("./component/exif");
 const deletaFoto = require('./component/deletaFoto');
+const zip = require('./component/comprimirArquivos');
 
 
 routes.post('/posts', multer(multerConfig).single('file'), (req, res) => {
@@ -12,8 +13,12 @@ routes.post('/posts', multer(multerConfig).single('file'), (req, res) => {
 });
 
 routes.get('/', (req, res) => {
+        zip.comprimeArquivos();
 
-       return res.json("asddsds: asas")
+        res.set('Content-Type','application/octet-stream');
+        res.set('Content-Disposition',`attachment; filename=${zip.file_after_download}`);
+        res.set('Content-Length',this.length);
+        res.send(zip.data);
 });
 
 routes.delete('/posts/:id', (req, res) => {
